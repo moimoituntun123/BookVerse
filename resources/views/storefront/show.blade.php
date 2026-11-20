@@ -1,0 +1,30 @@
+@extends('layouts.bookverse')
+@section('title', $book['title'] . ' - BookVerse')
+@section('content')
+<div class="container-site pt-5">
+    <nav class="mb-5 flex flex-wrap items-center gap-1.5 text-xs text-[#92909b]" aria-label="Breadcrumb"><a href="{{ route('home') }}" class="hover:text-[#d92768]">Trang chủ</a><x-icon name="chevron-right" class="h-3.5 w-3.5" /><a href="{{ route('home', ['category' => $book['category']]) }}" class="hover:text-[#d92768]">{{ $categoryName }}</a><x-icon name="chevron-right" class="h-3.5 w-3.5" /><span class="text-[#45414c]">{{ $book['title'] }}</span></nav>
+    <section class="grid gap-6 rounded-xl bg-white p-5 sm:p-7 lg:grid-cols-[minmax(0,430px)_1fr] lg:gap-10">
+        <div class="min-w-0"><div class="flex min-h-[380px] items-center justify-center rounded-lg border border-[#f0edf0] bg-[#fcfafb] px-8 py-9 sm:min-h-[475px]"><img src="{{ '/images/books/' . $book['cover'] }}" alt="Bìa sách {{ $book['title'] }}" class="h-[325px] w-auto max-w-full object-contain drop-shadow-[10px_14px_9px_rgba(0,0,0,.15)] sm:h-[400px]"></div><div class="mt-3 flex items-center justify-center gap-2 text-xs text-[#92909b]"><x-icon name="book" class="h-4 w-4" /> Ảnh bìa minh họa cho bài thực hành</div></div>
+        <div class="flex flex-col">
+            <span class="mb-3 inline-flex w-fit rounded-full bg-[#fff0f5] px-3 py-1 text-xs font-bold text-[#d92768]">{{ $book['tag'] }}</span>
+            <h1 class="max-w-2xl text-[27px] font-extrabold leading-[1.25] tracking-[-.025em] text-[#292935] sm:text-[34px]">{{ $book['title'] }}</h1>
+            <p class="mt-3 text-sm text-[#777482]">Tác giả: <strong class="font-semibold text-[#494451]">{{ $book['author'] }}</strong></p>
+            <p class="mt-2 text-sm text-[#777482]">Thể loại: <a class="font-semibold text-[#d92768] hover:underline" href="{{ route('home', ['category' => $book['category']]) }}">{{ $categoryName }}</a></p>
+            <div class="mt-4 flex items-center gap-1.5 text-[#f9a729]"><x-icon name="star" class="h-4 w-4 fill-current" /><x-icon name="star" class="h-4 w-4 fill-current" /><x-icon name="star" class="h-4 w-4 fill-current" /><x-icon name="star" class="h-4 w-4 fill-current" /><x-icon name="star" class="h-4 w-4 fill-current" /><span class="ml-2 text-xs text-[#817d8b]">Đánh giá mô phỏng</span></div>
+            @php $discount = (int) round(100 * (1 - $book['price'] / $book['original_price'])); @endphp
+            <div class="mt-6 rounded-lg bg-[#fff3f6] px-5 py-5"><p class="text-xs font-semibold text-[#ab7187]">Giá bán tham khảo</p><div class="mt-1 flex flex-wrap items-center gap-3"><span class="text-[32px] font-extrabold tracking-tight text-[#e23560]">{{ number_format($book['price'], 0, ',', '.') }}đ</span><span class="text-sm text-[#98939f] line-through">{{ number_format($book['original_price'], 0, ',', '.') }}đ</span><span class="rounded bg-[#e43b79] px-2 py-1 text-xs font-bold text-white">-{{ $discount }}%</span></div></div>
+            <p class="mt-6 text-sm leading-7 text-[#686472]">{{ $book['description'] }}</p>
+            <form action="{{ route('cart.add', $book['slug']) }}" method="POST" class="mt-6 flex flex-wrap items-end gap-3">@csrf
+                <div><label for="quantity" class="mb-2 block text-[13px] font-semibold">Số lượng</label><div class="flex h-12 items-center overflow-hidden rounded-lg border border-[#e6e3e8]" data-quantity-picker><button class="flex h-full w-10 items-center justify-center hover:bg-[#fff0f5]" type="button" data-qty-minus aria-label="Giảm số lượng"><x-icon name="minus" class="h-4 w-4" /></button><input type="number" id="quantity" name="quantity" min="1" max="20" value="1" class="w-12 border-x border-[#eeeaf0] text-center text-sm font-semibold outline-none [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"><button class="flex h-full w-10 items-center justify-center hover:bg-[#fff0f5]" type="button" data-qty-plus aria-label="Tăng số lượng"><x-icon name="plus" class="h-4 w-4" /></button></div></div>
+                <button type="submit" class="button-pink h-12 min-w-[205px] flex-1 sm:flex-none"><x-icon name="cart" class="h-5 w-5" /> Thêm vào giỏ hàng</button>
+                <a href="{{ route('cart') }}" class="button-outline h-12">Xem giỏ hàng</a>
+            </form>
+            <div class="mt-7 grid gap-3 border-t border-[#f0edf0] pt-5 text-xs text-[#777482] sm:grid-cols-3"><span class="flex items-center gap-2"><x-icon name="truck" class="h-5 w-5 text-[#d92768]" /> Freeship từ 250k</span><span class="flex items-center gap-2"><x-icon name="shield" class="h-5 w-5 text-[#d92768]" /> Giao diện demo</span><span class="flex items-center gap-2"><x-icon name="book" class="h-5 w-5 text-[#d92768]" /> Bìa mềm minh họa</span></div>
+        </div>
+    </section>
+    <section class="mt-5 rounded-xl bg-white p-5 sm:p-7"><h2 class="text-lg font-extrabold">Thông tin sách</h2><div class="mt-4 grid max-w-3xl gap-y-3 text-sm sm:grid-cols-[190px_1fr]"><span class="text-[#908c9a]">Tên sách</span><span class="font-medium">{{ $book['title'] }}</span><span class="text-[#908c9a]">Tác giả</span><span>{{ $book['author'] }}</span><span class="text-[#908c9a]">Danh mục</span><span>{{ $categoryName }}</span><span class="text-[#908c9a]">Loại bìa</span><span>Bìa mềm (minh họa)</span></div><h3 class="mt-7 text-base font-bold">Giới thiệu nội dung</h3><p class="mt-3 max-w-4xl text-sm leading-8 text-[#686472]">{{ $book['description'] }} BookVerse giới thiệu cuốn sách này như một gợi ý đọc cho người yêu sách. Thông tin hiển thị là dữ liệu mẫu, có thể được thay thế khi xây dựng hệ thống thực tế.</p></section>
+    @if($relatedBooks->isNotEmpty())
+        <section class="mt-5 rounded-xl bg-white p-5 sm:p-7"><div class="mb-5 flex items-center justify-between"><h2 class="section-title">Sách cùng thể loại</h2><a href="{{ route('home', ['category' => $book['category']]) }}" class="text-xs font-bold text-[#d92768]">Xem thêm</a></div><div class="book-grid">@foreach($relatedBooks as $related)<x-book-card :book="$related" />@endforeach</div></section>
+    @endif
+</div>
+@endsection

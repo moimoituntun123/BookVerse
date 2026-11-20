@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="300" height="400" viewBox="0 0 300 400">
+    <rect width="300" height="400" fill="#c4d9bb"/>
+    <rect x="9" y="9" width="282" height="382" fill="none" stroke="#d5ac3c" stroke-opacity=".40" stroke-width="2"/>
+    <path d="M10 10h11v380H10z" fill="#000" opacity=".06"/>
+    <text x="150" y="39" text-anchor="middle" font-size="10" font-family="Segoe UI, Arial, sans-serif" fill="#302f38" opacity=".8" letter-spacing="3.1" font-weight="600">BOOKVERSE EDITION</text>
+    <g><path d="M0 220Q70 190 144 235T300 205v64H0Z" fill="#77a87e"/><path d="M0 250Q100 205 220 250T300 240v30H0Z" fill="#59875d"/><path d="M60 210v-22M54 190l6 6 6-6" stroke="#4b8051" stroke-width="2"/><circle cx="60" cy="182" r="7" fill="#d5ac3c"/><path d="M110 224v-22M104 204l6 6 6-6" stroke="#4b8051" stroke-width="2"/><circle cx="110" cy="196" r="7" fill="#d5ac3c"/><path d="M172 210v-22M166 190l6 6 6-6" stroke="#4b8051" stroke-width="2"/><circle cx="172" cy="182" r="7" fill="#d5ac3c"/><path d="M217 219v-22M211 199l6 6 6-6" stroke="#4b8051" stroke-width="2"/><circle cx="217" cy="191" r="7" fill="#d5ac3c"/><path d="M260 215v-22M254 195l6 6 6-6" stroke="#4b8051" stroke-width="2"/><circle cx="260" cy="187" r="7" fill="#d5ac3c"/><circle cx="235" cy="108" r="36" fill="#d5ac3c" opacity=".8"/></g>
+    <path d="M48 260h204" stroke="#d5ac3c" stroke-width="1.5" stroke-opacity=".65"/>
+    <text x="150" y="294" text-anchor="middle" font-size="24" font-family="Segoe UI, Arial, sans-serif" fill="#302f38" font-weight="800" letter-spacing="-.4"><tspan x="150" dy="0">TÔI THẤY HOA VÀNG</tspan><tspan x="150" dy="27">TRÊN CỎ XANH</tspan></text>
+    <text x="150" y="366" text-anchor="middle" font-size="11" font-family="Segoe UI, Arial, sans-serif" fill="#655d64" opacity=".9" letter-spacing="1" font-weight="600">NGUYỄN NHẬT ÁNH</text>
+    </svg>
