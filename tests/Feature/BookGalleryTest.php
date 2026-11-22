@@ -1,19 +1,31 @@
 <?php
 
 it('renders a static cover when a book has only one image', function () {
-    $response = $this->get(route('books.show', 'nha-gia-kim'));
+    $response = $this->get(route('books.show', 'thoi-quen-nguyen-tu'));
 
     $response->assertOk()
-        ->assertSee('/images/books/nha-gia-kim.svg')
+        ->assertSee('/images/books/thoi-quen-nguyen-tu.svg')
         ->assertDontSee('data-autoplay-interval', false)
         ->assertDontSee('data-gallery-image', false)
         ->assertDontSee('data-gallery-next', false)
         ->assertDontSee('data-gallery-thumbnail', false);
 });
 
-it('combines the cover and every gallery image into an autoplaying slider', function () {
+it('shows the configured book images in an autoplaying slider', function () {
     $books = config('bookverse.books');
-    $books[0]['images'] = ['nha-gia-kim.svg', 'doraemon-tap-1.svg', 'conan-tap-1.svg'];
+    $galleryImages = [
+        'nha-gia-kim-oasis.svg',
+        'nha-gia-kim-journey.svg',
+        'nha-gia-kim-gallery-03.svg',
+        'nha-gia-kim-gallery-04.svg',
+        'nha-gia-kim-gallery-05.svg',
+        'nha-gia-kim-gallery-06.svg',
+        'nha-gia-kim-gallery-07.svg',
+        'nha-gia-kim-gallery-08.svg',
+        'nha-gia-kim-gallery-09.svg',
+        'nha-gia-kim-gallery-10.svg',
+    ];
+    $books[0]['images'] = $galleryImages;
     config(['bookverse.books' => $books]);
 
     $response = $this->get(route('books.show', 'nha-gia-kim'));
@@ -22,10 +34,11 @@ it('combines the cover and every gallery image into an autoplaying slider', func
         ->assertSee('data-autoplay-interval="3000"', false)
         ->assertSee('data-gallery-prev', false)
         ->assertSee('data-gallery-next', false)
-        ->assertSee('aria-label="Xem ảnh 3"', false)
-        ->assertSee('/images/books/nha-gia-kim.svg')
-        ->assertSee('/images/books/doraemon-tap-1.svg')
-        ->assertSee('/images/books/conan-tap-1.svg');
+        ->assertSee('aria-label="Xem ảnh 11"', false);
 
-    expect(substr_count($response->getContent(), 'data-gallery-image'))->toBe(3);
+    foreach (['nha-gia-kim.svg', ...$galleryImages] as $image) {
+        $response->assertSee('/images/books/'.$image);
+    }
+
+    expect(substr_count($response->getContent(), 'data-gallery-image'))->toBe(11);
 });
