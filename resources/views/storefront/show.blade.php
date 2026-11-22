@@ -1,10 +1,40 @@
 @extends('layouts.bookverse')
 @section('title', $book['title'] . ' - BookVerse')
 @section('content')
+@php
+    $galleryImages = collect([$book['cover']])
+        ->concat(is_array($book['images'] ?? null) ? $book['images'] : [])
+        ->filter(fn ($image) => is_string($image) && trim($image) !== '')
+        ->unique()
+        ->values();
+    $imageCount = $galleryImages->count();
+@endphp
 <div class="container-site pt-5">
     <nav class="mb-5 flex flex-wrap items-center gap-1.5 text-xs text-[#92909b]" aria-label="Breadcrumb"><a href="{{ route('home') }}" class="hover:text-[#d92768]">Trang chủ</a><x-icon name="chevron-right" class="h-3.5 w-3.5" /><a href="{{ route('home', ['category' => $book['category']]) }}" class="hover:text-[#d92768]">{{ $categoryName }}</a><x-icon name="chevron-right" class="h-3.5 w-3.5" /><span class="text-[#45414c]">{{ $book['title'] }}</span></nav>
     <section class="grid gap-6 rounded-xl bg-white p-5 sm:p-7 lg:grid-cols-[minmax(0,430px)_1fr] lg:gap-10">
-        <div class="min-w-0"><div class="flex min-h-[380px] items-center justify-center rounded-lg border border-[#f0edf0] bg-[#fcfafb] px-8 py-9 sm:min-h-[475px]"><img src="{{ '/images/books/' . $book['cover'] }}" alt="Bìa sách {{ $book['title'] }}" class="h-[325px] w-auto max-w-full object-contain drop-shadow-[10px_14px_9px_rgba(0,0,0,.15)] sm:h-[400px]"></div><div class="mt-3 flex items-center justify-center gap-2 text-xs text-[#92909b]"><x-icon name="book" class="h-4 w-4" /> Ảnh bìa minh họa cho bài thực hành</div></div>
+        <div class="min-w-0">
+            <div class="rounded-lg border border-[#f0edf0] bg-[#fcfafb] px-4 py-5 sm:px-8 sm:py-9" data-book-gallery @if($imageCount > 1) data-autoplay-interval="3000" @endif>
+                <div class="relative flex min-h-[340px] items-center justify-center sm:min-h-[400px]" @if($imageCount > 1) role="group" aria-roledescription="carousel" aria-label="Thư viện ảnh {{ $book['title'] }}" @endif>
+                    @foreach($galleryImages as $index => $image)
+                        <img src="{{ '/images/books/' . $image }}" alt="Ảnh {{ $index + 1 }} của sách {{ $book['title'] }}" @if($imageCount > 1) data-gallery-image aria-hidden="{{ $index === 0 ? 'false' : 'true' }}" @endif class="book-gallery-slide {{ $imageCount > 1 ? 'absolute inset-0 opacity-0' : 'relative' }} {{ $index === 0 ? 'is-active opacity-100' : '' }} h-[325px] w-auto max-w-full object-contain drop-shadow-[10px_14px_9px_rgba(0,0,0,.15)] transition-opacity duration-500 sm:h-[400px]">
+                    @endforeach
+                    @if($imageCount > 1)
+                        <button type="button" data-gallery-prev class="absolute left-2 z-10 flex h-10 w-10 items-center justify-center rounded-full bg-white/90 text-[#d92768] shadow-md transition hover:bg-white sm:left-3" aria-label="Ảnh trước"><x-icon name="chevron-left" /></button>
+                        <button type="button" data-gallery-next class="absolute right-2 z-10 flex h-10 w-10 items-center justify-center rounded-full bg-white/90 text-[#d92768] shadow-md transition hover:bg-white sm:right-3" aria-label="Ảnh tiếp theo"><x-icon name="chevron-right" /></button>
+                    @endif
+                </div>
+                @if($imageCount > 1)
+                    <div class="mt-4 flex max-w-full gap-2 overflow-x-auto py-1" data-gallery-thumbnails role="group" aria-label="Chọn ảnh sách">
+                        @foreach($galleryImages as $index => $image)
+                            <button type="button" data-gallery-thumbnail aria-label="Xem ảnh {{ $index + 1 }}" aria-pressed="{{ $index === 0 ? 'true' : 'false' }}" class="shrink-0 rounded-md border-2 p-1 transition hover:border-[#d92768] {{ $index === 0 ? 'border-[#d92768]' : 'border-transparent' }}">
+                                <img src="{{ '/images/books/' . $image }}" alt="" class="h-16 w-12 rounded-sm object-contain sm:h-20 sm:w-14">
+                            </button>
+                        @endforeach
+                    </div>
+                @endif
+            </div>
+            <div class="mt-3 flex items-center justify-center gap-2 text-xs text-[#92909b]"><x-icon name="book" class="h-4 w-4" /> Ảnh bìa minh họa cho bài thực hành</div>
+        </div>
         <div class="flex flex-col">
             <span class="mb-3 inline-flex w-fit rounded-full bg-[#fff0f5] px-3 py-1 text-xs font-bold text-[#d92768]">{{ $book['tag'] }}</span>
             <h1 class="max-w-2xl text-[27px] font-extrabold leading-[1.25] tracking-[-.025em] text-[#292935] sm:text-[34px]">{{ $book['title'] }}</h1>
