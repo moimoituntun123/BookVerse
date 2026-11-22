@@ -45,14 +45,11 @@
             </form>
         </div>
         <nav class="border-t border-[#f2eef0] bg-white" aria-label="Điều hướng chính">
-            <div class="container-site hidden items-center gap-7 py-3 text-[13px] font-semibold md:flex">
+            <div class="container-site hidden items-center gap-5 overflow-x-auto py-3 text-[13px] font-semibold whitespace-nowrap md:flex">
                 <a href="{{ route('home') }}" class="{{ request()->routeIs('home') && request('category') === null ? 'text-[#e43b79]' : 'text-[#555260]' }} hover:text-[#e43b79]">Trang chủ</a>
-                <a href="{{ route('home', ['category'=>'van-hoc']) }}" class="hover:text-[#e43b79] {{ $activeCategory === 'van-hoc' ? 'text-[#e43b79]' : 'text-[#555260]' }}">Văn học</a>
-                <a href="{{ route('home', ['category'=>'ky-nang']) }}" class="hover:text-[#e43b79] {{ $activeCategory === 'ky-nang' ? 'text-[#e43b79]' : 'text-[#555260]' }}">Tâm lý - Kỹ năng</a>
-                <a href="{{ route('home', ['category'=>'kinh-te']) }}" class="hover:text-[#e43b79]">Kinh tế</a>
-                <a href="{{ route('home', ['category'=>'manga']) }}" class="hover:text-[#e43b79]">Manga - Comic</a>
-                <a href="{{ route('home', ['category'=>'thieu-nhi']) }}" class="hover:text-[#e43b79]">Thiếu nhi</a>
-                <a href="{{ route('home', ['category'=>'khoa-hoc']) }}" class="hover:text-[#e43b79]">Khoa học</a>
+                @foreach($categories ?? config('bookverse.categories', []) as $cat)
+                    <a href="{{ route('home', ['category' => $cat['slug']]) }}" class="shrink-0 hover:text-[#e43b79] {{ $activeCategory === $cat['slug'] ? 'text-[#e43b79]' : 'text-[#555260]' }}">{{ $cat['name'] }}</a>
+                @endforeach
                 <a href="{{ route('home') }}#sach-uu-dai" class="ml-auto flex items-center gap-1.5 text-[#e43b79]"><x-icon name="tag" class="h-4 w-4" /> Sách giảm giá</a>
             </div>
             <div class="container-site hidden flex-wrap gap-4 border-t border-[#f2eef0] py-3 text-sm font-medium md:hidden" data-mobile-menu>

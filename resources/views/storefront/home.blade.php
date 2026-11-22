@@ -13,19 +13,19 @@
                 </div>
                 <div class="pointer-events-none absolute -right-10 -top-16 hidden h-[460px] w-[460px] rounded-full border-[55px] border-white/30 sm:block"></div>
                 <div class="pointer-events-none absolute bottom-0 right-0 hidden h-full w-[47%] items-center justify-center sm:flex">
-                    <img src="/images/books/nha-gia-kim.svg" alt="" class="hero-book hero-book-left absolute bottom-[54px] left-[7%] h-[206px] w-auto -rotate-[16deg] drop-shadow-2xl lg:h-[248px]" />
-                    <img src="/images/books/cay-cam-ngot-cua-toi.svg" alt="" class="hero-book relative z-20 h-[265px] w-auto rotate-[7deg] drop-shadow-2xl lg:h-[305px]" />
-                    <img src="/images/books/dac-nhan-tam.svg" alt="" class="hero-book hero-book-right absolute bottom-[47px] right-[5%] h-[210px] w-auto rotate-[17deg] drop-shadow-2xl lg:h-[250px]" />
+                    <img src="{{ asset('images/categories/sach-lich-su.jpg') }}" alt="Bìa sách lịch sử" class="hero-book hero-book-left absolute bottom-[54px] left-[7%] h-[206px] w-auto -rotate-[16deg] object-contain drop-shadow-2xl lg:h-[248px]" />
+                    <img src="{{ asset('images/banners/hero-psychology.jpg') }}" alt="Bìa sách tâm lý và kỹ năng" class="hero-book relative z-20 h-[265px] w-auto rotate-[7deg] object-contain drop-shadow-2xl lg:h-[305px]" />
+                    <img src="{{ asset('images/categories/sach-giao-khoa.png') }}" alt="Bìa sách giáo khoa" class="hero-book hero-book-right absolute bottom-[47px] right-[5%] h-[210px] w-auto rotate-[17deg] object-contain drop-shadow-2xl lg:h-[250px]" />
                 </div>
             </section>
             <div class="grid grid-cols-2 gap-3 lg:grid-cols-1">
                 <a href="#sach-uu-dai" class="relative flex min-h-[165px] flex-col justify-center overflow-hidden rounded-xl bg-[#ffdce6] px-5 py-6 sm:px-7">
                     <div class="relative z-10 max-w-[70%]"><p class="text-xs font-bold tracking-[.04em] text-[#d92a6c]">ƯU ĐÃI ĐẶC BIỆT</p><h2 class="mt-2 text-[18px] font-extrabold leading-snug text-[#562f45] sm:text-[23px]">Sách giảm giá<br>đến 35%</h2><span class="mt-3 inline-flex items-center gap-1 text-xs font-bold text-[#d92a6c]">Xem ngay <x-icon name="arrow-right" class="h-3.5 w-3.5" /></span></div>
-                    <img src="/images/books/tam-ly-hoc-ve-tien.svg" alt="" class="absolute -bottom-7 right-3 h-[152px] w-auto rotate-[13deg] drop-shadow-lg sm:h-[172px]" />
+                    <img src="{{ asset('images/banners/banner-economics.png') }}" alt="Bìa sách kinh tế" class="absolute -bottom-7 right-3 h-[152px] w-auto object-contain rotate-[13deg] drop-shadow-lg sm:h-[172px]" />
                 </a>
-                <a href="{{ route('home', ['category'=>'manga']) }}" class="relative flex min-h-[165px] flex-col justify-center overflow-hidden rounded-xl bg-[#e8e8ff] px-5 py-6 sm:px-7">
-                    <div class="relative z-10 max-w-[70%]"><p class="text-xs font-bold tracking-[.04em] text-[#6c58b0]">GÓC TRUYỆN TRANH</p><h2 class="mt-2 text-[18px] font-extrabold leading-snug text-[#4b3c7b] sm:text-[23px]">Manga & Comic<br>cực hấp dẫn</h2><span class="mt-3 inline-flex items-center gap-1 text-xs font-bold text-[#6c58b0]">Khám phá <x-icon name="arrow-right" class="h-3.5 w-3.5" /></span></div>
-                    <img src="/images/books/conan-tap-1.svg" alt="" class="absolute -bottom-7 right-3 h-[152px] w-auto rotate-[13deg] drop-shadow-lg sm:h-[172px]" />
+                <a href="{{ route('home', ['category'=>'ngoai-ngu']) }}" class="relative flex min-h-[165px] flex-col justify-center overflow-hidden rounded-xl bg-[#e8e8ff] px-5 py-6 sm:px-7">
+                    <div class="relative z-10 max-w-[70%]"><p class="text-xs font-bold tracking-[.04em] text-[#6c58b0]">GÓC NGOẠI NGỮ</p><h2 class="mt-2 text-[18px] font-extrabold leading-snug text-[#4b3c7b] sm:text-[23px]">Sách học tiếng Anh<br>và ngoại ngữ</h2><span class="mt-3 inline-flex items-center gap-1 text-xs font-bold text-[#6c58b0]">Khám phá <x-icon name="arrow-right" class="h-3.5 w-3.5" /></span></div>
+                    <img src="{{ asset('images/banners/banner-foreign-language.jpg') }}" alt="Bìa sách học ngoại ngữ" class="absolute -bottom-7 right-3 h-[152px] w-auto object-contain rotate-[13deg] drop-shadow-lg sm:h-[172px]" />
                 </a>
             </div>
         </div>
@@ -41,10 +41,10 @@
 <section id="danh-muc" class="container-site {{ $keyword === '' && $category === '' ? 'pt-3' : 'pt-7' }}">
     <div class="rounded-xl bg-white p-5 sm:p-6">
         <div class="mb-5 flex items-end justify-between gap-3"><div><span class="section-eyebrow">KHÁM PHÁ BOOKVERSE</span><h2 class="section-title">Danh mục sách</h2></div><a href="{{ route('home') }}#danh-muc" class="inline-flex items-center gap-1 text-xs font-semibold text-[#d92768]">Tất cả <x-icon name="chevron-right" class="h-4 w-4" /></a></div>
-        <div class="grid grid-cols-3 gap-3 sm:grid-cols-6 sm:gap-4">
+        <div class="grid grid-cols-2 gap-3 sm:grid-cols-4 sm:gap-4 lg:grid-cols-7">
             @foreach($categories as $cat)
                 <a href="{{ route('home', ['category' => $cat['slug']]) }}" class="group flex flex-col items-center gap-2.5 rounded-lg px-1 py-2 text-center transition hover:bg-[#fff8fa] {{ $category === $cat['slug'] ? 'ring-1 ring-pink-200 bg-pink-50' : '' }}">
-                    <span class="flex h-[62px] w-[62px] items-center justify-center rounded-full text-[#8b3e61] transition group-hover:scale-105 sm:h-[76px] sm:w-[76px]" style="background-color: {{ $cat['color'] }}"><x-icon :name="$cat['icon']" class="h-7 w-7 sm:h-8 sm:w-8" /></span>
+                    <img src="{{ asset('images/categories/' . $cat['image']) }}" alt="" loading="lazy" class="h-[88px] w-[68px] rounded-md object-cover shadow-sm transition group-hover:-translate-y-0.5 sm:h-[100px] sm:w-[76px]">
                     <span class="max-w-[115px] text-[12px] font-semibold leading-4 text-[#524e5b] sm:text-[13px]">{{ $cat['name'] }}</span>
                 </a>
             @endforeach
@@ -72,11 +72,6 @@
     <section id="ban-chay" class="container-site mt-6 rounded-xl bg-white p-5 sm:p-6">
         <div class="mb-5 flex items-end justify-between gap-3"><div><span class="section-eyebrow">ĐƯỢC YÊU THÍCH</span><h2 class="section-title">Sách bán chạy</h2></div><span class="text-xs text-[#9c98a4]">Gợi ý dành cho bạn</span></div>
         <div class="book-grid">@foreach($bestBooks as $book)<x-book-card :book="$book" />@endforeach</div>
-    </section>
-
-    <section class="container-site mt-6 grid gap-3 sm:grid-cols-2">
-        <a href="{{ route('home', ['category'=>'van-hoc']) }}" class="mini-banner relative flex min-h-40 items-center overflow-hidden rounded-xl bg-[#ffe1d7] px-6 py-6 sm:px-8"><div class="relative z-10"><span class="text-xs font-semibold text-[#ad5b49]">CHUYỆN KỂ MỖI NGÀY</span><h3 class="mt-2 text-xl font-extrabold text-[#77413a]">Góc văn học<br>đáng đọc</h3><span class="mt-3 inline-flex items-center gap-1 text-xs font-bold text-[#9e4d48]">Khám phá <x-icon name="arrow-right" class="h-3.5 w-3.5" /></span></div><img src="/images/books/toi-thay-hoa-vang.svg" alt="" class="absolute right-[13%] top-3 h-[157px] rotate-12 drop-shadow-xl" /></a>
-        <a href="{{ route('home', ['category'=>'ky-nang']) }}" class="mini-banner relative flex min-h-40 items-center overflow-hidden rounded-xl bg-[#e8e5fb] px-6 py-6 sm:px-8"><div class="relative z-10"><span class="text-xs font-semibold text-[#6b55a0]">ĐỌC ĐỂ TRƯỞNG THÀNH</span><h3 class="mt-2 text-xl font-extrabold text-[#56427d]">Tủ sách kỹ năng<br>cho bạn</h3><span class="mt-3 inline-flex items-center gap-1 text-xs font-bold text-[#6b55a0]">Xem sách <x-icon name="arrow-right" class="h-3.5 w-3.5" /></span></div><img src="/images/books/thoi-quen-nguyen-tu.svg" alt="" class="absolute right-[13%] top-3 h-[157px] rotate-12 drop-shadow-xl" /></a>
     </section>
 
     <section class="container-site mt-6 rounded-xl bg-white p-5 sm:p-6">
