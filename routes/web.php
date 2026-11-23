@@ -1,7 +1,7 @@
 <?php
 
-use App\Http\Controllers\BookVerseController;
 use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\BookVerseController;
 use App\Http\Middleware\EnsureRole;
 use Illuminate\Support\Facades\Route;
 
@@ -25,6 +25,15 @@ Route::patch('/gio-hang/{slug}', [BookVerseController::class, 'updateCart'])
 Route::delete('/gio-hang/{slug}', [BookVerseController::class, 'removeFromCart'])
     ->name('cart.remove');
 
+Route::post('/thanh-toan/bat-dau', [BookVerseController::class, 'beginCheckout'])
+    ->name('checkout.start');
+
+Route::get('/thanh-toan', [BookVerseController::class, 'checkout'])
+    ->name('checkout');
+
+Route::post('/thanh-toan/ap-dung-ma', [BookVerseController::class, 'applyCoupon'])
+    ->name('checkout.coupon');
+
 // ĐĂNG NHẬP
 Route::get('/dang-nhap', [BookVerseController::class, 'login'])
     ->name('login');
@@ -45,10 +54,10 @@ Route::post('/dang-xuat', [LoginController::class, 'logout'])
 
 // NHÂN VIÊN
 Route::view('/nhan-vien', 'staff.dashboard')
-    ->middleware(EnsureRole::class . ':staff')
+    ->middleware(EnsureRole::class.':staff')
     ->name('staff.dashboard');
 
 // ADMIN
 Route::view('/admin', 'admin.dashboard')
-    ->middleware(EnsureRole::class . ':admin')
+    ->middleware(EnsureRole::class.':admin')
     ->name('admin.dashboard');

@@ -33,7 +33,8 @@ class BookVerseController extends Controller
                 return true;
             }
 
-            $haystack = Str::lower(Str::ascii(($book['title'] ?? '') . ' ' . ($book['author'] ?? '')));
+            $haystack = Str::lower(Str::ascii(($book['title'] ?? '').' '.($book['author'] ?? '')));
+
             return str_contains($haystack, Str::lower(Str::ascii($keyword)));
         })->values();
 
@@ -72,11 +73,13 @@ class BookVerseController extends Controller
                 return null;
             }
             $quantity = max(1, min(20, (int) $quantity));
+
             return ['book' => $book, 'quantity' => $quantity, 'lineTotal' => $quantity * $book['price']];
         })->filter()->values();
 
         $subtotal = $items->sum('lineTotal');
         $shipping = $subtotal === 0 || $subtotal >= 250000 ? 0 : 30000;
+
         return view('storefront.cart', compact('items', 'subtotal', 'shipping'));
     }
 
@@ -99,6 +102,7 @@ class BookVerseController extends Controller
             $cart[$slug] = $validated['quantity'];
             $request->session()->put('bookverse_cart', $cart);
         }
+
         return redirect()->route('cart')->with('success', 'Đã cập nhật số lượng.');
     }
 
@@ -107,7 +111,103 @@ class BookVerseController extends Controller
         $cart = $request->session()->get('bookverse_cart', []);
         unset($cart[$slug]);
         $request->session()->put('bookverse_cart', $cart);
+
         return redirect()->route('cart')->with('success', 'Đã xóa sách khỏi giỏ hàng.');
+    }
+
+    public function beginCheckout(Request $request)
+    {
+        if (! $request->session()->has('demo_user')) {
+            return redirect()->route('login')->with('notice', 'Vui lòng đăng nhập để thanh toán.');
+        }
+
+        $validated = $request->validate([
+            'selected' => 'required|array|min:1',
+            'selected.*' => 'required|integer|min:1|max:20',
+        ]);
+
+        $cart = $request->session()->get('bookverse_cart', []);
+        $selected = [];
+
+        foreach ($validated['selected'] as $slug => $quantity) {
+            if (! array_key_exists($slug, $cart)) {
+                continue;
+            }
+
+            $selected[$slug] = max(1, min(20, (int) $quantity));
+        }
+
+        if ($selected === []) {
+            return redirect()->route('cart')->withErrors(['checkout' => 'Vui lòng chọn ít nhất một sản phẩm.']);
+        }
+
+        $request->session()->put('bookverse_checkout', $selected);
+        $request->session()->forget('bookverse_coupon');
+
+        return redirect()->route('checkout');
+    }
+
+    public function checkout(Request $request)
+    {
+        if (! $request->session()->has('demo_user')) {
+            return redirect()->route('login')->with('notice', 'Vui lòng đăng nhập để thanh toán.');
+        }
+
+        $summary = $this->checkoutSummary($request);
+        if ($summary['items']->isEmpty()) {
+            return redirect()->route('cart')->withErrors(['checkout' => 'Vui lòng chọn sản phẩm trước khi thanh toán.']);
+        }
+
+        return view('storefront.checkout', $summary);
+    }
+
+    public function applyCoupon(Request $request)
+    {
+        if (! $request->session()->has('demo_user')) {
+            return redirect()->route('login');
+        }
+
+        $validated = $request->validate([
+            'coupon' => 'required|string|max:30',
+        ]);
+
+        $code = strtoupper(trim($validated['coupon']));
+        if (! in_array($code, ['BOOK10', 'FREESHIP'], true)) {
+            return back()->withErrors(['coupon' => 'Mã giảm giá không hợp lệ.']);
+        }
+
+        $request->session()->put('bookverse_coupon', $code);
+
+        return back()->with('success', "Đã áp dụng mã {$code}.");
+    }
+
+    private function checkoutSummary(Request $request)
+    {
+        $selected = $request->session()->get('bookverse_checkout', []);
+        $books = $this->books()->keyBy('slug');
+
+        $items = collect($selected)->map(function ($quantity, $slug) use ($books) {
+            $book = $books->get($slug);
+            if (! $book) {
+                return null;
+            }
+
+            $quantity = max(1, min(20, (int) $quantity));
+
+            return [
+                'book' => $book,
+                'quantity' => $quantity,
+                'lineTotal' => $quantity * $book['price'],
+            ];
+        })->filter()->values();
+
+        $subtotal = $items->sum('lineTotal');
+        $coupon = $request->session()->get('bookverse_coupon');
+        $discount = $coupon === 'BOOK10' ? (int) round($subtotal * 0.10) : 0;
+        $shipping = $subtotal === 0 || $subtotal >= 250000 || $coupon === 'FREESHIP' ? 0 : 30000;
+        $total = max(0, $subtotal - $discount + $shipping);
+
+        return compact('items', 'subtotal', 'discount', 'shipping', 'coupon', 'total');
     }
 
     public function login()

@@ -73,6 +73,106 @@ document.addEventListener('DOMContentLoaded', () => {
         plus?.addEventListener('click', () => update(1));
     });
 
+    document.querySelectorAll('[data-cart-summary]').forEach((cart) => {
+        const items = [...cart.querySelectorAll('[data-cart-item]')];
+        const checkboxes = [...cart.querySelectorAll('[data-cart-select]')];
+        const selectAll = [...cart.querySelectorAll('[data-cart-select-all]')];
+        const subtotalElement = cart.querySelector('[data-cart-subtotal]');
+        const shippingElement = cart.querySelector('[data-cart-shipping]');
+        const totalElement = cart.querySelector('[data-cart-total]');
+        const freeShippingElement = cart.querySelector('[data-cart-free-shipping]');
+        const checkoutButton = cart.querySelector('[data-cart-checkout]');
+        const selectedInputs = cart.querySelector('[data-cart-selected-inputs]');
+        const isAuthenticated = cart.dataset.cartAuthenticated === 'true';
+        const formatMoney = (amount) => `${new Intl.NumberFormat('vi-VN').format(amount)}đ`;
+
+        const updateSummary = () => {
+            let subtotal = 0;
+            let selectedCount = 0;
+            if (selectedInputs) selectedInputs.innerHTML = '';
+
+            items.forEach((item) => {
+                const checkbox = item.querySelector('[data-cart-select]');
+                const quantity = item.querySelector('[data-cart-quantity]');
+                const line = item.querySelector('[data-cart-line]');
+                const price = Number(item.dataset.price) || 0;
+                const itemQuantity = Math.max(1, Math.min(20, Number.parseInt(quantity?.value || '1', 10) || 1));
+                const amount = price * itemQuantity;
+
+                if (line) line.textContent = formatMoney(amount);
+                if (checkbox?.checked) {
+                    subtotal += amount;
+                    selectedCount += 1;
+                    const slug = item.dataset.slug;
+                    if (selectedInputs && slug) {
+                        const input = document.createElement('input');
+                        input.type = 'hidden';
+                        input.name = `selected[${slug}]`;
+                        input.value = String(itemQuantity);
+                        selectedInputs.appendChild(input);
+                    }
+                }
+            });
+
+            const shipping = selectedCount === 0 || subtotal >= 250000 ? 0 : 30000;
+            subtotalElement.textContent = formatMoney(subtotal);
+            shippingElement.textContent = selectedCount === 0
+                ? '0đ'
+                : shipping === 0
+                    ? 'Miễn phí'
+                    : formatMoney(shipping);
+            shippingElement.classList.toggle('text-green-600', selectedCount > 0 && shipping === 0);
+            totalElement.textContent = formatMoney(subtotal + shipping);
+
+            if (selectedCount === 0) {
+                freeShippingElement.textContent = 'Chọn sản phẩm để tính tổng đơn hàng.';
+                freeShippingElement.className = 'mt-6 rounded-lg bg-[#fff6f9] px-3.5 py-3 text-xs leading-5 text-[#9d536f]';
+            } else if (subtotal >= 250000) {
+                freeShippingElement.textContent = 'Đã đạt mức miễn phí vận chuyển!';
+                freeShippingElement.className = 'mt-6 flex items-center gap-2 rounded-lg bg-green-50 px-3.5 py-3 text-xs font-medium text-green-700';
+            } else {
+                freeShippingElement.textContent = `Thêm ${formatMoney(250000 - subtotal)} để đạt mức miễn phí vận chuyển (minh họa).`;
+                freeShippingElement.className = 'mt-6 rounded-lg bg-[#fff6f9] px-3.5 py-3 text-xs leading-5 text-[#9d536f]';
+            }
+
+            const allSelected = checkboxes.length > 0 && checkboxes.every((checkbox) => checkbox.checked);
+            selectAll.forEach((checkbox) => {
+                checkbox.checked = allSelected;
+                checkbox.indeterminate = selectedCount > 0 && selectedCount < checkboxes.length;
+            });
+
+            if (checkoutButton) {
+                const canSubmit = selectedCount > 0 && isAuthenticated;
+                checkoutButton.disabled = !canSubmit;
+                checkoutButton.classList.toggle('cursor-not-allowed', !canSubmit);
+                checkoutButton.classList.toggle('opacity-60', !canSubmit);
+                checkoutButton.textContent = !isAuthenticated && selectedCount > 0
+                    ? 'Đăng nhập để thanh toán'
+                    : 'Thanh toán';
+                checkoutButton.title = !isAuthenticated
+                    ? 'Vui lòng đăng nhập để thanh toán'
+                    : selectedCount === 0
+                        ? 'Vui lòng chọn ít nhất một sản phẩm'
+                        : 'Tiếp tục thanh toán';
+            }
+        };
+
+        checkboxes.forEach((checkbox) => checkbox.addEventListener('change', updateSummary));
+        selectAll.forEach((checkbox) => {
+            checkbox.addEventListener('change', () => {
+                checkboxes.forEach((itemCheckbox) => {
+                    itemCheckbox.checked = checkbox.checked;
+                });
+                updateSummary();
+            });
+        });
+        cart.querySelectorAll('[data-cart-quantity]').forEach((quantity) => {
+            quantity.addEventListener('input', updateSummary);
+        });
+
+        updateSummary();
+    });
+
     document.querySelectorAll('[data-toggle-password]').forEach((btn) => {
         const field = btn.closest('.auth-input-wrap')?.querySelector('input');
         if (!field) return;

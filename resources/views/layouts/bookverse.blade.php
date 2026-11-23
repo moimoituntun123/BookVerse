@@ -33,7 +33,15 @@
             </form>
 
             <div class="ml-auto flex shrink-0 items-center gap-3 sm:gap-6">
-                <a href="{{ route('login') }}" class="group flex items-center gap-2 text-[#666574] transition hover:text-[#e43b79]"><x-icon name="user" class="h-6 w-6" /><span class="hidden text-[13px] leading-tight lg:block">Tài khoản<span class="block font-semibold text-[#292935] group-hover:text-[#e43b79]">Đăng nhập</span></span></a>
+                @if(session('demo_user'))
+                    <form action="{{ route('logout') }}" method="POST" class="group flex items-center gap-2 text-[#666574]">
+                        @csrf
+                        <x-icon name="user" class="h-6 w-6" />
+                        <span class="hidden text-[13px] leading-tight lg:block">{{ session('demo_user.name') }}<button type="submit" class="block font-semibold text-[#292935] group-hover:text-[#e43b79]">Đăng xuất</button></span>
+                    </form>
+                @else
+                    <a href="{{ route('login') }}" class="group flex items-center gap-2 text-[#666574] transition hover:text-[#e43b79]"><x-icon name="user" class="h-6 w-6" /><span class="hidden text-[13px] leading-tight lg:block">Tài khoản<span class="block font-semibold text-[#292935] group-hover:text-[#e43b79]">Đăng nhập</span></span></a>
+                @endif
                 <a href="{{ route('cart') }}" class="group flex items-center gap-2 text-[#666574] transition hover:text-[#e43b79]"><span class="relative"><x-icon name="cart" class="h-7 w-7" />@if($cartCount > 0)<span class="absolute -right-2 -top-2 grid min-h-4 min-w-4 place-items-center rounded-full bg-[#e43b79] px-1 text-[10px] font-bold text-white">{{ $cartCount }}</span>@endif</span><span class="hidden text-[13px] leading-tight lg:block">Giỏ hàng<span class="block font-semibold text-[#292935] group-hover:text-[#e43b79]">{{ $cartCount }} sản phẩm</span></span></a>
                 <button type="button" class="rounded-lg p-1.5 text-[#292935] hover:bg-pink-50 md:hidden" data-menu-toggle aria-label="Mở menu" aria-expanded="false"><x-icon name="menu" class="h-6 w-6" /></button>
             </div>
