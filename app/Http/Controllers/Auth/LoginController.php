@@ -1,74 +1,67 @@
 <?php
+
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class LoginController extends Controller
 {
     public function login(Request $request)
     {
-        
-        abort_unless(app()->environment('local'), 403);
-
-        $request->validate([
+        // Kiểm tra dữ liệu đầu vào
+        $credentials = $request->validate([
             'email' => 'required|email',
             'password' => 'required',
         ]);
-        $accounts = [
-            'customer@bookverse.test' => [
-                'password' => 'Khach@12345',
-                'name' => 'Khách hàng',
-                'role' => 'customer',
-            ],
 
-            'staff@bookverse.test' => [
-                'password' => 'Staff@12345',
-                'name' => 'Nhân viên',
-                'role' => 'staff',
-            ],
+        // Chỉ cho phép tài khoản đang hoạt động đăng nhập
+        $credentials['account_status'] = 1;
 
-            'admin@bookverse.test' => [
-                'password' => 'Admin@12345',
-                'name' => 'Quản trị viên',
-                'role' => 'admin',
-            ],
-        ];
-
-        $email = strtolower(trim($request->email));
-        $password = $request->password;
-
-        $account = $accounts[$email] ?? null;
-
-        // Kiểm tra tài khoản
-        if (!$account ||
-            !hash_equals($account['password'], $password)) {
+        // Xác thực bằng dữ liệu trong bảng users
+        if (!Auth::attempt($credentials)) {
             return back()
                 ->withErrors([
-                    'email' => 'Email hoặc mật khẩu không đúng.'
+                    'email' => 'Email hoặc mật khẩu không đúng, hoặc tài khoản đã bị khóa.',
                 ])
                 ->onlyInput('email');
         }
 
-        // Lưu thông tin đăng nhập vào Session
+        // Tạo lại session để bảo mật
         $request->session()->regenerate();
 
-        $request->session()->put('demo_user', [
-            'name' => $account['name'],
-            'email' => $email,
-            'role' => $account['role'],
-        ]);
+        // Lấy thông tin người dùng đang đăng nhập
+        $user = Auth::user();
 
         // Điều hướng theo quyền
-        return match ($account['role']) {
-            'admin' => redirect()->route('admin.dashboard'),
-            'staff' => redirect()->route('staff.dashboard'),
-            'customer' => redirect()->route('home'),
+        return match ((int) $user->role) {
+            1 => redirect()->route('home'),
+            2 => redirect()->route('staff.dashboard'),
+            3 => redirect()->route('admin.dashboard'),
+            default => $this->invalidRole($request),
         };
     }
 
+    // Xử lý tài khoản có role không hợp lệ
+    private function invalidRole(Request $request)
+    {
+        Auth::logout();
+
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
+        return redirect()->route('login')
+            ->withErrors([
+                'email' => 'Tài khoản chưa được phân quyền hợp lệ.',
+            ]);
+    }
+
+    // Đăng xuất
     public function logout(Request $request)
     {
+        Auth::logout();
+
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
