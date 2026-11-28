@@ -219,10 +219,4 @@ class BookVerseController extends Controller
     {
         return view('storefront.register');
     }
-
-    // Hai biểu mẫu demo không tạo tài khoản, không truy vấn DB, không lưu mật khẩu.
-    public function demoAuth()
-    {
-        return back()->with('notice', 'Đây là giao diện minh họa. Chưa kết nối hệ thống tài khoản.');
-    }
 }

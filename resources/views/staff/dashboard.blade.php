@@ -69,7 +69,7 @@
   <div class="main">
     <header class="topbar">
       <div class="top-left"><button class="mini-icon hamburger" id="menu-toggle" aria-label="Mở menu"><svg><use href="#i-menu"/></svg></button><div class="breadcrumb">BookVerse <span style="padding:0 7px">/</span> <b id="crumb">Tổng quan</b></div></div>
-      <div class="top-right"><label class="searchbox"><svg><use href="#i-search"/></svg><input id="global-search" type="search" placeholder="Tìm sách, SKU, mã đơn..." aria-label="Tìm kiếm toàn hệ thống" /></label><button class="mini-icon" id="notification-btn" title="Xem việc cần xử lý" aria-label="Xem việc cần xử lý"><svg><use href="#i-bell"/></svg></button><div class="staff-profile"><div class="avatar">NT</div><div class="profile-text"><div class="profile-name">Nguyen Manh Tung</div><div class="profile-role">Nhân viên</div></div></div></div>
+      <div class="top-right"><label class="searchbox"><svg><use href="#i-search"/></svg><input id="global-search" type="search" placeholder="Tìm sách, SKU, mã đơn..." aria-label="Tìm kiếm toàn hệ thống" /></label><button class="mini-icon" id="notification-btn" title="Xem việc cần xử lý" aria-label="Xem việc cần xử lý"><svg><use href="#i-bell"/></svg></button><div class="staff-profile"><div class="avatar">NT</div><div class="profile-text"><div class="profile-name">Nguyen Manh Tung</div><div class="profile-role">Nhân viên</div></div></div><form action="{{ route('logout') }}" method="POST">@csrf<button type="submit" class="btn sm danger">Đăng xuất</button></form></div>
     </header>
     <main class="workspace" id="workspace"><div id="heading"></div><div id="page-body"></div><div class="footer">© BookVerse · Giao diện quản lý dành cho nhân viên</div></main>
   </div>

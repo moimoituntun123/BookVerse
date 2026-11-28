@@ -182,25 +182,4 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    document.querySelectorAll('[data-demo-form]').forEach((form) => {
-        form.addEventListener('submit', (event) => {
-            // Demo: ngăn gửi thông tin đăng nhập / đăng ký đi bất kỳ đâu.
-            event.preventDefault();
-            const confirmation = form.querySelector('#confirm-password');
-            const password = form.querySelector('#register-password');
-            const error = form.querySelector('[data-password-error]');
-            if (confirmation && password && confirmation.value !== password.value) {
-                error?.classList.remove('hidden');
-                confirmation.focus();
-                return;
-            }
-            error?.classList.add('hidden');
-            const msg = form.querySelector('[data-demo-message]');
-            if (msg) {
-                msg.textContent = 'Đã kiểm tra biểu mẫu. Đây là bản demo nên không tạo phiên đăng nhập hay tài khoản.';
-                msg.classList.remove('hidden');
-                msg.scrollIntoView({behavior: 'smooth', block: 'nearest'});
-            }
-        });
-    });
 });

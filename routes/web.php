@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\BookVerseController;
 use App\Http\Middleware\EnsureRole;
 use Illuminate\Support\Facades\Route;
@@ -41,12 +42,12 @@ Route::get('/dang-nhap', [BookVerseController::class, 'login'])
 Route::post('/dang-nhap', [LoginController::class, 'login'])
     ->name('login.submit');
 
-// ĐĂNG KÝ DEMO
+// ĐĂNG KÝ
 Route::get('/dang-ky', [BookVerseController::class, 'register'])
     ->name('register');
 
-Route::post('/demo/dang-ky', [BookVerseController::class, 'demoAuth'])
-    ->name('register.demo');
+Route::post('/dang-ky', [RegisterController::class, 'store'])
+    ->name('register.submit');
 
 // ĐĂNG XUẤT
 Route::post('/dang-xuat', [LoginController::class, 'logout'])
